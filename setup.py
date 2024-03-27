@@ -4,7 +4,7 @@ with open("README.md", "r", encoding='utf-8') as f:
   long_description = f.read()
 
 __version__ ='0.0.0'
-REPO_NAME = 'Text-Summarization-Case-Study'
+REPO_NAME = ''
 AUTHOR = 'Chetand777'
 SRC_REPO = 'textsummarizer'
 AUTHOR_EMAIL = 'chetandaddikar31@gmail.com'
@@ -14,7 +14,7 @@ setuptools.setup(
     version=__version__,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
-    description="Python package for Text Summarization",
+    description="Python pachage for Text Summarization",
     long_description=long_description,
     long_description_content="text/markdown",
     url=f"https://github.com/{AUTHOR}/{REPO_NAME}",
