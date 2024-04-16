@@ -126,10 +126,3 @@ setting>actions>runner>new self hosted runner>choose os>run command one by one
     AWS_ECR_LOGINE_URI
 
     ECR_REPOSITORY_NAME = simple-app
-
-
-
-
-
-
-"# Text-Summarization-Case-Study" 
