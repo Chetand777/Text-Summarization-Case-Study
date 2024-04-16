@@ -5,6 +5,7 @@ from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from datasets import load_dataset, load_from_disk
 import torch
 import requests
+import os
 from textsummarizer.entity import ModelTrainerConfig
 
 class ModelTrainer:

@@ -28,6 +28,7 @@ class ModelEvaluation:
     for article_batch, target_batch in tqdm(zip(article_batches, target_batches), total=len(article_batches)):
       inputs = tokenizer(article_batch, max_length=1024, truncation=True, return_tensors='pt', padding='max_length')
 
+
       summaries = model.generate(input_ids=inputs['input_ids'].to(device),
                                 attention_mask=inputs['attention_mask'].to(device),
                                 length_penalty=0.8, num_beams=8, max_length=128)
@@ -53,6 +54,7 @@ class ModelEvaluation:
 
     rouge_names = ['rouge1', 'rouge2', 'rougeL', 'rougeLsum']
     rouge_metric = load_metric('rouge')
+
 
     score = self.calculate_metric_on_test_ds(dataset_samsum_pt['test'], 
                                     rouge_metric, model_pegasus, tokenizer,
