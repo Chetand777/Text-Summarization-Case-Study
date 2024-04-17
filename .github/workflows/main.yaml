@@ -45,7 +45,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -63,7 +62,6 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo '::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'
-
 
   Continuous-Deployment:
     needs: build-and-push-ecr-image
@@ -87,11 +85,9 @@ jobs:
         run:  | 
           docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
 
-
       - name: Stop and remove container if running
         run: |
           docker ps -q --filter "name=texts" | grep -q . && docker stop texts && docker rm -fv texts  
-
 
       - name: Run docker image to serve users
         run:  |
@@ -100,5 +96,6 @@ jobs:
       - name: Clean previous images and containers
         run:  |
           docker system prune -f
+
 
 
