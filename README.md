@@ -85,6 +85,7 @@ Email: chetandaddikar31@gmail.com
 
 
 ## 3. Create ECR repo to store/save docker image
+    - Save the URI: 381491967036.dkr.ecr.ap-south-1.amazonaws.com/text-s
 
 
 ## 4. Create EC2 Machine (Ubuntu)
@@ -95,7 +96,7 @@ Email: chetandaddikar31@gmail.com
 
     #optional:
 
-    sudo apt-get update
+    sudo apt-get update -y
 
     sudo apt-get upgrade
 
@@ -103,9 +104,9 @@ Email: chetandaddikar31@gmail.com
 
     curl -fsSL https://get.docker.com -o get-docker.sh
 
-    sudo sh get docker.sh
+    sudo sh get-docker.sh
 
-    sudo usermode -aG docker ubuntu
+    sudo usermod -aG docker ubuntu
 
     newgrp docker
 
