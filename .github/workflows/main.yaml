@@ -45,6 +45,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+
+
+      - name: Authenticate Docker client to ECR
+        run: |
+          (Get-ECRLoginCommand).Password | docker login --username AWS --password-stdin 381491967036.dkr.ecr.ap-south-1.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build -t texts1 .
+
+      - name: Tag Docker image
+        run: |
+          docker tag texts1:latest 381491967036.dkr.ecr.ap-south-1.amazonaws.com/texts1:latest
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push 381491967036.dkr.ecr.ap-south-1.amazonaws.com/texts1:latest
+
+
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
