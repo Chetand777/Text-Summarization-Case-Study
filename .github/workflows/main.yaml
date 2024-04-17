@@ -45,26 +45,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Authenticate Docker client to ECR
-        run: |
-          $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) | docker login --username AWS --password-stdin $ECR_REGISTRY
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY_URI }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t texts1 .
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Tag Docker image
-        run: |
-          docker tag texts1:latest $ECR_REGISTRY/texts1:latest
+      - name: Build, tag and push image to Amazon ECR
+        id: build-image
+        env: 
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: latest
+        run:  |
+          # Build a docker container and
+          # push it to ECR so that it can 
+          # be deployed to ECS
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo '::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'
 
-      - name: Push Docker image to ECR
-        run: |
-          docker push $ECR_REGISTRY/texts1:latest
 
   Continuous-Deployment:
     needs: build-and-push-ecr-image
@@ -88,17 +87,16 @@ jobs:
         run:  | 
           docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
 
+
       - name: Stop and remove container if running
         run: |
           docker ps -q --filter "name=texts" | grep -q . && docker stop texts && docker rm -fv texts  
 
-      - name: Run docker image to serve
+
+      - name: Run docker image to serve users
         run:  |
           docker run -d -p 8080:8080 --name=texts -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ 	  secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}' ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
 
       - name: Clean previous images and containers
         run:  |
           docker system prune -f
-
-
-
