@@ -91,9 +91,9 @@ jobs:
         run: |
           docker pull ${{ steps.login-ecr.outputs.registry }}/text-s:latest
 
-      - name: Stop and remove container if running
-        run: |
-          docker ps -q --filter "name=texts" | grep -q . && docker stop texts && docker rm -fv texts
+      #- name: Stop and remove container if running
+        #run: |
+          #docker ps -q --filter "name=texts" | grep -q . && docker stop texts && docker rm -fv texts
 
       - name: Run docker image to serve users
         run: |
